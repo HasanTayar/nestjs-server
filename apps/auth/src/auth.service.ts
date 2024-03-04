@@ -15,7 +15,8 @@ export class AuthService {
     };
     const expires = new Date();
     expires.setSeconds(
-      expires.getSeconds() + this.configService.get('JWT_EXPIRATION_TIME'),
+      expires.getSeconds() +
+        Number(this.configService.get('JWT_EXPIRATION_TIME')),
     );
     const token = this.jwtService.sign(tokenPayLoad);
 

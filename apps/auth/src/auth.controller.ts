@@ -4,7 +4,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { currentUser } from './current-user.decorator';
 import { UsersDocument } from './users/models/users.schema';
 import { Response } from 'express';
-@Controller()
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @UseGuards(LocalAuthGuard)
