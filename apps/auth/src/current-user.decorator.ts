@@ -5,6 +5,6 @@ const getCurrentUserByContext = (context: ExecutionContext): UsersDocument => {
   return context.switchToHttp().getRequest().user;
 };
 
-export const currentUser = createParamDecorator(
+export const CurrentUser = createParamDecorator(
   (_data, context: ExecutionContext) => getCurrentUserByContext(context),
 );

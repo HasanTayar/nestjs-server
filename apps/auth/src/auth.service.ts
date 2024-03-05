@@ -3,6 +3,7 @@ import { UsersDocument } from './users/models/users.schema';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { TokenPayLoad } from './interfaces';
 @Injectable()
 export class AuthService {
   constructor(
@@ -10,13 +11,12 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
   async login(user: UsersDocument, response: Response) {
-    const tokenPayLoad = {
+    const tokenPayLoad: TokenPayLoad = {
       userId: user._id.toHexString(),
     };
     const expires = new Date();
     expires.setSeconds(
-      expires.getSeconds() +
-        Number(this.configService.get('JWT_EXPIRATION_TIME')),
+      expires.getSeconds() + this.configService.get('JWT_EXPIRES_IN'),
     );
     const token = this.jwtService.sign(tokenPayLoad);
 
