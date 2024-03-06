@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { ClientProxy } from '@nestjs/microservices';
 import { Stripe } from 'stripe';
 import { PaymentsCreateChargeDto } from './dto/payments-create-charge.dto';
+import { text } from 'stream/consumers';
 @Injectable()
 export class PaymentsService {
   private readonly stripe = new Stripe(
@@ -25,6 +26,7 @@ export class PaymentsService {
     });
     this.notificationsService.emit('notify_email', {
       email,
+      text: `Your payment of $${amount} was successful`,
     });
     return paymentIntent;
   }
