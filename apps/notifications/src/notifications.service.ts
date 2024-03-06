@@ -6,20 +6,24 @@ import { ConfigService } from '@nestjs/config';
 export class NotificationsService {
   constructor(private readonly configService: ConfigService) {}
   private readonly transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: 'Office365',
     auth: {
-      type: 'OAuth2',
       user: this.configService.get('SMTP_USER'),
       clientId: this.configService.get('SMTP_CLIENT_ID'),
       clientSecret: this.configService.get('SMTP_CLIENT_SECRET'),
     },
   });
   async notifyEmail({ email }: NotifyEmailDto) {
-    await this.transporter.sendMail({
-      from: this.configService.get('SMTP_USER'),
-      to: email,
-      subject: 'Reservation Confirmation',
-      text: 'Test Text',
-    });
+    console.log('Sending email to', email);
+    try {
+      await this.transporter.sendMail({
+        from: this.configService.get('SMTP_USER'),
+        to: email,
+        subject: 'Reservation Confirmation',
+        text: 'Test Text',
+      });
+    } catch (error) {
+      console.log('Error sending email', error);
+    }
   }
 }
