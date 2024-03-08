@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: notifications
+  name: notifications
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notifications
+  template:
+    metadata:
+      labels:
+        app: notifications
+    spec:
+      containers:
+        - image: me-west1-docker.pkg.dev/roadster-416613/notifications/production
+          name: notifications
+          env:
+            - name: PORT
+              value: '3000'
+            - name: SMTP_CLIENT_ID
+              value: 774149914291-s0cg443tafei9rj7t87r2saghkdl7stu.apps.googleusercontent.com
+            - name: SMTP_USER
+              value: info@qpmatrix.tech
+            - name: SMTP_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: google
+                  key: clientSecret
+            - name: SMTP_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: google
+                  key: refreshToken
+          ports:
+            - containerPort: 3000
