@@ -1,35 +1,43 @@
+# Development stage
 FROM node:alpine As development
 
 WORKDIR /usr/src/app
 
+# Copy package.json and pnpm-lock.yaml to the working directory
 COPY package.json ./
 COPY pnpm-lock.yaml ./
-COPY tsconfig.json  tsconfig.json
+COPY tsconfig.json tsconfig.json
+COPY nest-cli.json nest-cli.json
+
 RUN npm install -g pnpm
 
-RUN pnpm install
-
+# Copy the apps/auth and libs directories
 COPY apps/auth apps/auth
 COPY libs libs
 
-RUN cd apps/auth && pnpm install
+# Install dependencies and build the project
+RUN pnpm install -r
+RUN pnpm run build auth
 
-RUN pnpm run build
-
-FROM node:alpine  as production
+# Production stage
+FROM node:alpine as production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
+# Copy package.json and pnpm-lock.yaml files
 COPY package.json ./
 COPY pnpm-lock.yaml ./
 
 RUN npm install -g pnpm
 
+# Install production dependencies
 RUN pnpm install --prod
 
+# Copy the built files from the development stage
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD [ "node" ,"dist/apps/auth/main"]
+# Set the command to run the application
+CMD [ "node", "dist/apps/auth/main" ]
