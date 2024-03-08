@@ -1,22 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { NotifyEmailDto } from './dto/notify-email.dto';
 import * as nodemailer from 'nodemailer';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class NotificationsService {
-  constructor() {}
+  constructor(private readonly configService: ConfigService) {}
   private readonly transporter = nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
-    port: 587,
+    service: 'gmail',
     auth: {
-      user: 'info@qpmatrix.tech',
-      pass: 'AkZNqsU83zpmw7Vh',
+      type: 'OAuth2',
+      user: this.configService.get('SMTP_USER'),
+      clientId: this.configService.get('SMTP_CLIENT_ID'),
+      clientSecret: this.configService.get('SMTP_CLIENT_SECRET'),
+      refreshToken: this.configService.get('SMTP_REFRESH_TOKEN'),
     },
   });
   async notifyEmail({ email, text }: NotifyEmailDto) {
     try {
       await this.transporter.sendMail({
-        from: 'info@qpmatrix.tech',
-        to: email,
+        from: this.configService.get('SMTP_USER'),
+        to: 'info@qpmatrix.tech',
         subject: 'Reservation Confirmation',
         text: text,
       });
