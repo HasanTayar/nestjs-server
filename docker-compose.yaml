@@ -50,7 +50,4 @@ services:
       - .env
     ports:
      - "3306:3306"
-  rabbitmq:
-    image: rabbitmq
-    ports:
-      - "5672:5672"
+
