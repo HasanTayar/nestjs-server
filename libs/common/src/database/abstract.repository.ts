@@ -30,7 +30,7 @@ export abstract class AbstractRepository<T extends AbstractEntity<T>> {
     }
     return entity;
   }
-  async finOneAndUpdate(
+  async findOneAndUpdate(
     where: FindOptionsWhere<T>,
     partialEntity: QueryDeepPartialEntity<T>,
   ): Promise<T> {
